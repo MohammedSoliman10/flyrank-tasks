@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# SQLite database files (created automatically at runtime)
+*.db
+*.db-shm
+*.db-wal
+
+# Environment and editor files
+.env
+.env.*
+!.env.example
+.DS_Store
+.idea/
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*

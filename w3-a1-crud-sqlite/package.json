@@ -1,0 +1,32 @@
+{
+  "name": "w3-a1-crud-sqlite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Week 3 Assignment 1 - a CRUD tasks API backed by SQLite instead of an in-memory array.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test",
+    "init-db": "node scripts/init-db.js"
+  },
+  "engines": {
+    "node": ">=20.19"
+  },
+  "keywords": [
+    "flyrank",
+    "express",
+    "sqlite",
+    "crud"
+  ],
+  "author": "Mohammed Soliman",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "supertest": "^7.3.1"
+  }
+}
