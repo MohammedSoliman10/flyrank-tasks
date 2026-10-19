@@ -6,6 +6,8 @@ Assignments completed for the **FlyRank Backend AI Engineering** internship.
 | --- | --- | --- |
 | Week 3 · A1 — CRUD API with SQLite | [`w3-a1-crud-sqlite`](./w3-a1-crud-sqlite) | ✅ Complete |
 | Week 3 · A3 — Containerized PostgreSQL stack | [`task3`](./task3) | ✅ Complete |
+| Task 4 — Supabase Auth API | [`task4`](./task4) | ✅ Complete |
+| Task 5 — Polite Books to Scrape scraper | [`task5`](./task5) | ✅ Complete |
 
 Each assignment lives in its own folder with its own dependencies, database, and
 README. More assignments will be added here as the internship progresses.
@@ -57,4 +59,61 @@ docker compose up --build
 ```
 
 Full documentation: [`task3/README.md`](./task3/README.md)
+
+## Task 4 — Supabase Auth API
+
+An Express API with Supabase email/password auth, Bearer JWT verification, a
+reusable auth middleware, protected profile/dashboard/admin routes, logout, and
+Swagger UI.
+
+**Highlights**
+
+- `POST /auth/signup`, `POST /auth/login`, `POST /auth/logout`
+- `GET /public/info`, `GET /protected/profile`, `GET /protected/dashboard`
+- JWT verification with `supabase.auth.getUser(token)`
+- `201` / `200` / `204` / `400` / `401` / `403` behavior, with generic login errors
+- Swagger UI at `/docs` with a Bearer authorization scheme
+- `.env` ignored; `.env.example` committed; no `service_role` key
+- 16 passing tests using the real Supabase SDK against a local GoTrue-compatible mock
+- Committed Swagger screenshot and manual smoke-test transcript
+
+Because no hosted Supabase credentials were available in this environment, the
+live flow was verified against the local mock. Replacing `SUPABASE_URL` and
+`SUPABASE_KEY` in `.env` with real project values needs no code changes.
+
+```bash
+cd task4
+npm install
+npm test
+# local demo: npm run mock:supabase, then npm start
+```
+
+Full documentation: [`task4/README.md`](./task4/README.md)
+
+## Task 5 — Polite Books to Scrape scraper
+
+A Node.js + Cheerio + Zod scraper for the first 3 catalogue pages of the Books to
+Scrape sandbox. It produces 60 unique, validated book records and a run report.
+
+**Highlights**
+
+- 60 unique book pages from exactly 3 catalogue pages
+- 8 raw fields plus numeric `price_gbp`
+- Strict Zod schema; invalid records go to `errors.json`
+- Disk cache, 500 ms delay, 15 s timeout, clear User-Agent, sequential requests
+- One retry for timeouts/5xx; no retry for 403/404
+- Deliberately broken URL run keeps the 60 valid records and reports the 404
+- Committed clean and broken-run reports; cache is gitignored
+- 11 offline tests for parsing, validation, cache, and retry behavior
+
+```bash
+cd task5
+npm install
+npm test
+npm run scrape          # live run, ~42 seconds; second run is cache-only
+npm run scrape:broken   # one fake 404 plus the 60 valid records
+```
+
+Full documentation: [`task5/README.md`](./task5/README.md)
+
 
