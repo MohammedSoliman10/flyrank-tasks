@@ -8,6 +8,7 @@ Assignments completed for the **FlyRank Backend AI Engineering** internship.
 | Week 3 · A3 — Containerized PostgreSQL stack | [`task3`](./task3) | ✅ Complete |
 | Task 4 — Supabase Auth API | [`task4`](./task4) | ✅ Complete |
 | Task 5 — Polite Books to Scrape scraper | [`task5`](./task5) | ✅ Complete |
+| Capstone — Social Media Studio | [`social-media-studio`](./social-media-studio) | ✅ Complete · live target opt-in |
 
 Each assignment lives in its own folder with its own dependencies, database, and
 README. More assignments will be added here as the internship progresses.
@@ -115,5 +116,41 @@ npm run scrape:broken   # one fake 404 plus the 60 valid records
 ```
 
 Full documentation: [`task5/README.md`](./task5/README.md)
+
+## Capstone — Social Media Studio
+
+A self-contained capstone service that turns one blog post into reviewed,
+platform-specific social variants and publishes approved variants through a
+durable, idempotent scheduler.
+
+**Highlights**
+
+- Ingest a URL or pasted Markdown; the stored post is the source of truth
+- Generate distinct X, LinkedIn, and optional Telegram/Discord/Mastodon variants
+- Enforce real constraint profiles: length, hashtag count, exclamation limit,
+  banned phrases; blocked edits name the broken rule
+- Review workflow: `draft → approved | rejected → published`; unapproved
+  variants return `409` and cannot be scheduled
+- One `SocialPublisher` interface with Telegram (real), Discord, Mastodon, and
+  two mock adapters; platform transport is selected by configuration
+- Durable SQLite scheduler with claim/lease recovery, idempotency keys,
+  `429 Retry-After` handling, bounded retries, and append-only history
+- Browser campaign dashboard, seeded demo, 26 deterministic tests, and a
+  committed evidence pack
+
+The default configuration uses the two mock adapters so the demo needs no
+credentials. The real Telegram adapter is enabled with `.env` values; the live
+send was not executed in this environment because no bot token was available.
+That limitation is documented in the capstone README and EVIDENCE.
+
+```bash
+cd social-media-studio
+npm install
+npm run seed
+npm start
+# open http://localhost:3000
+```
+
+Full documentation: [`social-media-studio/README.md`](./social-media-studio/README.md)
 
 

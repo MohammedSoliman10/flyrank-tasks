@@ -1,0 +1,46 @@
+name: flyrank-capstone-social-studio
+description: Ingest one blog post, generate reviewed platform variants, and publish approved variants exactly once through a durable scheduler and adapter layer.
+run: npm start
+seed: npm run seed
+test: npm test
+base_url: http://localhost:3000
+endpoints:
+  health:
+    method: GET
+    path: /health
+  platforms:
+    method: GET
+    path: /api/platforms
+  ingest_post:
+    method: POST
+    path: /api/posts
+  list_campaigns:
+    method: GET
+    path: /api/posts
+  get_campaign:
+    method: GET
+    path: /api/posts/:id
+  edit_variant:
+    method: PATCH
+    path: /api/variants/:id
+  approve_variant:
+    method: POST
+    path: /api/variants/:id/approve
+  reject_variant:
+    method: POST
+    path: /api/variants/:id/reject
+  schedule_variant:
+    method: POST
+    path: /api/variants/:id/schedule
+  list_slots:
+    method: GET
+    path: /api/slots
+  publish_history:
+    method: GET
+    path: /api/history
+  mock_preview:
+    method: GET
+    path: /api/mock-posts
+  run_scheduler:
+    method: POST
+    path: /api/admin/tick
