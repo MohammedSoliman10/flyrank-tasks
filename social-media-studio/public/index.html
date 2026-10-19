@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Social Media Studio</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b1020;
+        --panel: #121a2d;
+        --panel-2: #17213a;
+        --border: #263352;
+        --text: #e8eefc;
+        --muted: #93a3c4;
+        --accent: #7c9cff;
+        --good: #3ddc97;
+        --warn: #ffc857;
+        --bad: #ff6b81;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: radial-gradient(circle at 15% 0%, #18264a 0, var(--bg) 45%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+      main { max-width: 1180px; margin: 0 auto; padding: 32px 20px 72px; }
+      h1, h2, h3, p { margin-top: 0; }
+      h1 { font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: -0.04em; margin-bottom: 8px; }
+      h2 { font-size: 1.25rem; margin-bottom: 14px; }
+      h3 { font-size: 1rem; margin-bottom: 8px; }
+      .muted { color: var(--muted); }
+      .hero { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; margin-bottom: 24px; }
+      .pill { border: 1px solid var(--border); background: var(--panel); color: var(--muted); border-radius: 999px; padding: 7px 12px; font-size: 0.82rem; white-space: nowrap; }
+      .grid { display: grid; gap: 16px; }
+      .summary { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom: 20px; }
+      .card { background: linear-gradient(180deg, var(--panel), var(--panel-2)); border: 1px solid var(--border); border-radius: 16px; padding: 18px; box-shadow: 0 18px 50px rgba(0,0,0,0.18); }
+      .stat { font-size: 2rem; font-weight: 700; letter-spacing: -0.04em; }
+      .stat-label { color: var(--muted); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; }
+      .two-col { grid-template-columns: 1.15fr 0.85fr; align-items: start; }
+      @media (max-width: 860px) { .two-col { grid-template-columns: 1fr; } .hero { flex-direction: column; } }
+      .stack { display: grid; gap: 12px; }
+      label { display: grid; gap: 6px; font-size: 0.82rem; color: var(--muted); }
+      input, textarea {
+        width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px;
+        background: #0d1528; color: var(--text); font: inherit;
+      }
+      textarea { min-height: 120px; resize: vertical; }
+      button {
+        border: 1px solid var(--border); border-radius: 10px; padding: 9px 13px;
+        background: #1b2948; color: var(--text); font: inherit; cursor: pointer;
+      }
+      button:hover { border-color: var(--accent); }
+      button.primary { background: var(--accent); color: #071024; border-color: var(--accent); font-weight: 700; }
+      button.danger { border-color: #663243; color: var(--bad); }
+      button:disabled { opacity: 0.45; cursor: not-allowed; }
+      .row { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+      .row > * { flex: 1 1 150px; }
+      .row > button { flex: 0 0 auto; }
+      .campaign { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 16px; }
+      .campaign:first-of-type { border-top: 0; padding-top: 0; margin-top: 0; }
+      .variant { background: #0d1528; border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-top: 12px; }
+      .variant-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 10px; }
+      .platform { font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.78rem; color: var(--accent); }
+      .badge { border-radius: 999px; padding: 4px 9px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; border: 1px solid var(--border); color: var(--muted); }
+      .badge.approved, .badge.published, .badge.success { color: var(--good); border-color: #245a44; }
+      .badge.rejected, .badge.failed { color: var(--bad); border-color: #663243; }
+      .badge.scheduled, .badge.publishing, .badge.rate_limited { color: var(--warn); border-color: #66552c; }
+      pre.caption { white-space: pre-wrap; word-break: break-word; margin: 10px 0 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.82rem; line-height: 1.55; color: #cdd8f3; }
+      table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+      th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+      th { color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.7rem; }
+      .table-wrap { overflow-x: auto; }
+      .empty { color: var(--muted); font-size: 0.9rem; padding: 12px 0; }
+      .error { color: var(--bad); min-height: 1.2em; font-size: 0.85rem; }
+      .small { font-size: 0.8rem; }
+      a { color: var(--accent); }
+      .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+      .schedule { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+      .schedule input { width: auto; flex: 1 1 220px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="hero">
+        <div>
+          <h1>Social Media Studio</h1>
+          <p class="muted">
+            One blog post in. Platform-specific drafts out. Human review. Durable,
+            idempotent publishing.
+          </p>
+        </div>
+        <div class="pill" id="health">Loading…</div>
+      </header>
+
+      <section class="grid summary">
+        <div class="card"><div class="stat" id="stat-campaigns">0</div><div class="stat-label">Campaigns</div></div>
+        <div class="card"><div class="stat" id="stat-variants">0</div><div class="stat-label">Variants</div></div>
+        <div class="card"><div class="stat" id="stat-scheduled">0</div><div class="stat-label">Open slots</div></div>
+        <div class="card"><div class="stat" id="stat-published">0</div><div class="stat-label">Published</div></div>
+      </section>
+
+      <section class="grid two-col">
+        <div class="card">
+          <h2>Campaigns</h2>
+          <p class="muted small">Drafts are generated from the stored post. Only approved variants can be scheduled.</p>
+          <div id="campaigns"><div class="empty">Loading campaigns…</div></div>
+        </div>
+
+        <div class="stack">
+          <form class="card stack" id="ingest-form">
+            <h2>Ingest a post</h2>
+            <label>Title (optional)
+              <input name="title" placeholder="Why reliability is a product feature" />
+            </label>
+            <label>URL (optional if Markdown is pasted)
+              <input name="url" type="url" placeholder="https://example.com/blog/post" />
+            </label>
+            <label>Pasted Markdown
+              <textarea name="content" placeholder="# Post title&#10;&#10;The source text…"></textarea>
+            </label>
+            <button class="primary" type="submit">Generate variants</button>
+            <div class="error" id="ingest-error"></div>
+          </form>
+
+          <div class="card">
+            <h2>Worker</h2>
+            <p class="muted small">The scheduler runs every second. You can also force one pass for a demo.</p>
+            <button id="tick">Run scheduler now</button>
+            <div class="error" id="tick-error"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" style="margin-top: 16px">
+        <h2>Time slots</h2>
+        <div class="table-wrap"><table id="slots-table"><thead><tr><th>When</th><th>Platform</th><th>Status</th><th>Attempts</th><th>External id</th></tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <section class="card" style="margin-top: 16px">
+        <h2>Publish history</h2>
+        <div class="table-wrap"><table id="history-table"><thead><tr><th>When</th><th>Platform</th><th>Result</th><th>Attempt</th><th>Error</th></tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <section class="card" style="margin-top: 16px">
+        <h2>Mock platform preview</h2>
+        <p class="muted small">What the mock adapters would have posted. Each row is one idempotency key.</p>
+        <div class="table-wrap"><table id="mock-table"><thead><tr><th>Platform</th><th>Created</th><th>Idempotency key</th><th>Caption</th></tr></thead><tbody></tbody></table></div>
+      </section>
+    </main>
+
+    <script>
+      const $ = (selector) => document.querySelector(selector);
+
+      async function api(path, options = {}) {
+        const response = await fetch(path, {
+          headers: { 'Content-Type': 'application/json' },
+          ...options,
+        });
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          const detail = body.details?.[0]?.message ? ` — ${body.details[0].message}` : '';
+          throw new Error(`${body.error || `HTTP ${response.status}`}${detail}`);
+        }
+        return body;
+      }
+
+      function el(tag, attrs = {}, ...children) {
+        const node = document.createElement(tag);
+        for (const [key, value] of Object.entries(attrs)) {
+          if (key === 'class') node.className = value;
+          else if (key === 'text') node.textContent = value;
+          else if (key.startsWith('on')) node.addEventListener(key.slice(2).toLowerCase(), value);
+          else node.setAttribute(key, value);
+        }
+        for (const child of children.flat()) {
+          if (child == null || child === false) continue;
+          node.append(child.nodeType ? child : document.createTextNode(String(child)));
+        }
+        return node;
+      }
+
+      function badge(status) {
+        return el('span', { class: `badge ${status}` }, status);
+      }
+
+      function fmtDate(value) {
+        if (!value) return '—';
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+      }
+
+      function cell(value, className = '') {
+        return el('td', { class: className }, value ?? '—');
+      }
+
+      function renderCampaign(post) {
+        const card = el('article', { class: 'campaign' });
+        card.append(
+          el('div', { class: 'variant-head' },
+            el('h3', { text: post.title }),
+            el('span', { class: 'badge' }, `${post.variants.length} variants`),
+          ),
+          el('p', { class: 'muted small' },
+            post.source_url ? el('a', { href: post.source_url, target: '_blank', rel: 'noreferrer' }, post.source_url) : 'Pasted Markdown',
+          ),
+        );
+
+        for (const variant of post.variants) {
+          const box = el('div', { class: 'variant' });
+          box.append(
+            el('div', { class: 'variant-head' },
+              el('span', { class: 'platform' }, variant.platform),
+              badge(variant.status),
+            ),
+            el('pre', { class: 'caption', text: variant.text }),
+          );
+
+          const actions = el('div', { class: 'actions' });
+          if (variant.status !== 'published') {
+            actions.append(
+              el('button', {
+                class: variant.status === 'approved' ? '' : 'primary',
+                onclick: async () => {
+                  try {
+                    await api(`/api/variants/${variant.id}/approve`, { method: 'POST', body: '{}' });
+                    await refresh();
+                  } catch (error) { alert(error.message); }
+                },
+              }, variant.status === 'approved' ? 'Re-approve' : 'Approve'),
+              el('button', {
+                class: 'danger',
+                onclick: async () => {
+                  const reason = prompt('Rejection reason (optional):') ?? '';
+                  try {
+                    await api(`/api/variants/${variant.id}/reject`, {
+                      method: 'POST',
+                      body: JSON.stringify({ reason: reason || undefined }),
+                    });
+                    await refresh();
+                  } catch (error) { alert(error.message); }
+                },
+              }, 'Reject'),
+            );
+          }
+          box.append(actions);
+
+          if (variant.status === 'approved') {
+            const input = el('input', { type: 'datetime-local' });
+            const schedule = el('div', { class: 'schedule' },
+              input,
+              el('button', {
+                class: 'primary',
+                onclick: async () => {
+                  if (!input.value) return alert('Choose a date and time first.');
+                  try {
+                    await api(`/api/variants/${variant.id}/schedule`, {
+                      method: 'POST',
+                      body: JSON.stringify({ scheduled_for: new Date(input.value).toISOString() }),
+                    });
+                    await refresh();
+                  } catch (error) { alert(error.message); }
+                },
+              }, 'Schedule'),
+            );
+            box.append(schedule);
+          }
+
+          if (variant.slots?.length) {
+            box.append(el('p', { class: 'muted small', style: 'margin-top:10px' },
+              `Slot: ${fmtDate(variant.slots[0].scheduled_for)} · ${variant.slots[0].status}`,
+            ));
+          }
+
+          card.append(box);
+        }
+
+        return card;
+      }
+
+      function renderTable(tbody, rows, renderRow, emptyText) {
+        tbody.replaceChildren();
+        if (!rows.length) {
+          tbody.append(el('tr', {}, el('td', { colspan: '6', class: 'empty' }, emptyText)));
+          return;
+        }
+        for (const row of rows) tbody.append(renderRow(row));
+      }
+
+      let refreshing = false;
+      async function refresh() {
+        if (refreshing) return;
+        refreshing = true;
+        try {
+          const [{ posts }, { slots }, { attempts }, { posts: mocks }] = await Promise.all([
+            api('/api/posts'),
+            api('/api/slots'),
+            api('/api/history'),
+            api('/api/mock-posts'),
+          ]);
+          const campaigns = await Promise.all(posts.map((post) => api(`/api/posts/${post.id}`)));
+
+          $('#stat-campaigns').textContent = campaigns.length;
+          $('#stat-variants').textContent = campaigns.reduce((sum, post) => sum + post.variants.length, 0);
+          $('#stat-scheduled').textContent = slots.filter((slot) => ['scheduled', 'publishing'].includes(slot.status)).length;
+          $('#stat-published').textContent = slots.filter((slot) => slot.status === 'published').length;
+
+          const campaignBox = $('#campaigns');
+          campaignBox.replaceChildren();
+          if (!campaigns.length) {
+            campaignBox.append(el('div', { class: 'empty' }, 'No campaigns yet. Ingest a post to start.'));
+          } else {
+            for (const post of campaigns) campaignBox.append(renderCampaign(post));
+          }
+
+          renderTable($('#slots-table tbody'), slots, (slot) => el('tr', {},
+            cell(fmtDate(slot.scheduled_for)),
+            cell(slot.platform),
+            cell(badge(slot.status)),
+            cell(String(slot.attempts)),
+            cell(slot.external_id ?? '—', 'small'),
+          ), 'No slots scheduled.');
+
+          renderTable($('#history-table tbody'), attempts, (attempt) => el('tr', {},
+            cell(fmtDate(attempt.created_at)),
+            cell(attempt.platform),
+            cell(badge(attempt.status)),
+            cell(String(attempt.attempt_no)),
+            cell(attempt.error ?? '—', 'small'),
+          ), 'No publish attempts yet.');
+
+          renderTable($('#mock-table tbody'), mocks, (mock) => el('tr', {},
+            cell(mock.platform),
+            cell(fmtDate(mock.created_at)),
+            cell(mock.idempotency_key, 'small'),
+            cell(el('span', { class: 'small', text: mock.text })),
+          ), 'No mock posts yet.');
+        } catch (error) {
+          $('#health').textContent = `API error: ${error.message}`;
+        } finally {
+          refreshing = false;
+        }
+      }
+
+      $('#ingest-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const form = new FormData(event.currentTarget);
+        const payload = {
+          title: form.get('title')?.trim() || undefined,
+          url: form.get('url')?.trim() || undefined,
+          content: form.get('content')?.trim() || undefined,
+        };
+        $('#ingest-error').textContent = '';
+        try {
+          await api('/api/posts', { method: 'POST', body: JSON.stringify(payload) });
+          event.currentTarget.reset();
+          await refresh();
+        } catch (error) {
+          $('#ingest-error').textContent = error.message;
+        }
+      });
+
+      $('#tick').addEventListener('click', async () => {
+        $('#tick-error').textContent = '';
+        try {
+          await api('/api/admin/tick', { method: 'POST', body: '{}' });
+          await refresh();
+        } catch (error) {
+          $('#tick-error').textContent = error.message;
+        }
+      });
+
+      async function boot() {
+        try {
+          const health = await api('/health');
+          $('#health').textContent = `API online · ${health.platforms.length} platforms · worker ${health.worker ? 'on' : 'off'}`;
+        } catch {
+          $('#health').textContent = 'API offline';
+        }
+        await refresh();
+      }
+
+      boot();
+      setInterval(refresh, 5000);
+    </script>
+  </body>
+</html>
