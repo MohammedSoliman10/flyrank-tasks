@@ -1,0 +1,38 @@
+
+> flyrank-capstone-social-studio@1.0.0 test
+> node --test
+
+✔ Telegram adapter sends a real sendMessage request and returns the message id (22.9371ms)
+✔ Telegram adapter converts 429 into RateLimitError with Retry-After (1.4588ms)
+✔ Telegram adapter does not leak the bot token in a network error (0.5264ms)
+✔ Discord adapter posts to the wait=true webhook endpoint (0.6053ms)
+✔ Mastodon adapter uses a bearer token and returns the status URL (0.5021ms)
+✔ health and platform discovery report the active adapter configuration (33.1789ms)
+✔ ingestion creates one distinct variant per configured platform (13.1031ms)
+✔ ingestion accepts pasted Markdown without a URL (4.986ms)
+✔ ingestion blocks SSRF-style localhost URLs and malformed input (7.3754ms)
+✔ URL ingestion extracts a title and readable content (10.6567ms)
+✔ an unapproved variant cannot be scheduled (5.0758ms)
+✔ editing a variant enforces the platform profile and names the broken rule (7.8341ms)
+✔ approve, reject, and re-approve move a variant through review (5.1641ms)
+✔ a scheduled variant publishes once through the mock adapter (13.0007ms)
+✔ repeated schedule requests for the same active variant are refused (6.2982ms)
+✔ unknown resources and malformed JSON get clean 4xx responses (5.1908ms)
+✔ adapter swap is configuration only: the same x variant can publish through a different mock (6.4492ms)
+✔ a retry after the adapter accepted but the response was lost creates one post (13.6935ms)
+✔ a stale publishing lease from a crashed worker is reclaimed without a duplicate (3.7859ms)
+✔ 429 Retry-After is respected and the publish succeeds after the wait (7.7838ms)
+✔ publish attempts are capped and a permanently failing slot is marked failed (4.6603ms)
+✔ the mock adapter itself is idempotent for a repeated key (5.7079ms)
+✔ generated captions are distinct and satisfy every active constraint (2.761ms)
+✔ max_length and max_hashtags are enforced with named rules (0.2475ms)
+✔ min_hashtags, exclamation limits, and banned phrases are enforced (0.1822ms)
+✔ a valid caption reports no errors (0.5952ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 430.5627

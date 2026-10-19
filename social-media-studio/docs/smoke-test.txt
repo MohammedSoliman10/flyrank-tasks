@@ -1,0 +1,48 @@
+
+> flyrank-capstone-social-studio@1.0.0 smoke
+> bash scripts/smoke-test.sh
+
+Social Media Studio manual smoke test
+post=6cfd59bb-0c4c-4a0e-80b9-b3ae9394e750 x=e5fc5853-b190-485b-ac95-4de32608d05b linkedin=49b43c7c-2cd9-45b8-a25a-28d198d98631
+
+--- Dashboard and health ---
+GET / -> 200
+{"status":"ok","platforms":["x","linkedin"],"worker":true}
+{"platform":"x","adapter":"mock_x","configured":true}
+{"platform":"linkedin","adapter":"mock_linkedin","configured":true}
+
+--- Probe 3: schedule an unapproved variant (expect 409) ---
+{"error":"Variant must be approved before scheduling (current status: draft)"}
+HTTP 409
+
+--- Probe 2: edit to a rule-breaking caption (expect 422) ---
+{"error":"Constraint validation failed","platform":"x","details":[{"rule":"max_length","message":"X allows at most 280 characters; got 410"}]}
+HTTP 422
+
+--- Approve both variants ---
+{"platform":"x","status":"approved"}
+{"platform":"linkedin","status":"approved"}
+
+--- Schedule both approved variants ---
+{"created":true,"slot":{"id":"8755f511-57b9-42d5-83d6-0a06aad743dc","status":"scheduled","scheduled_for":"2026-10-19T13:00:00.000Z","idempotency_key":"slot_292239ca430584414f0f73db1be4d159"}}
+{"created":true,"slot":{"id":"33687499-767b-4190-a41d-3185f06cdf93","status":"scheduled","scheduled_for":"2026-10-19T13:01:00.000Z","idempotency_key":"slot_e609579b37964a1d9b99779bf9599760"}}
+
+--- A second slot for the same active variant is refused (expect 409) ---
+{"error":"Variant already has an active slot at 2026-10-19T13:00:00.000Z (scheduled)"}
+HTTP 409
+
+--- Advance time and run the scheduler ---
+{"checked_at":"2026-10-19T13:01:01.000Z","claimed":2,"published":2,"failed":0,"retrying":0,"rate_limited":0,"results":[{"slot_id":"8755f511-57b9-42d5-83d6-0a06aad743dc","status":"published","external_id":"mock_e74e8873-767c-41e8-8697-8a52e15e3221"},{"slot_id":"33687499-767b-4190-a41d-3185f06cdf93","status":"published","external_id":"mock_998409a6-b6cc-4afd-93a8-2b7c0b2172e3"}]}
+
+--- Run the scheduler again (must not duplicate) ---
+{"checked_at":"2026-10-19T13:05:00.000Z","claimed":0,"results":[],"published":0,"failed":0,"retrying":0,"rate_limited":0}
+
+--- Mock platform preview ---
+[{"platform":"linkedin","idempotency_key":"slot_e609579b37964a1d9b99779bf9599760","id":"998409a6-b6cc-4afd-93a8-2b7c0b2172e3"},{"platform":"x","idempotency_key":"slot_292239ca430584414f0f73db1be4d159","id":"e74e8873-767c-41e8-8697-8a52e15e3221"}]
+
+--- Publish history ---
+[{"platform":"linkedin","status":"success","attempt_no":1,"adapter":"mock_linkedin","external_id":"mock_998409a6-b6cc-4afd-93a8-2b7c0b2172e3","slot_status":"published"},{"platform":"x","status":"success","attempt_no":1,"adapter":"mock_x","external_id":"mock_e74e8873-767c-41e8-8697-8a52e15e3221","slot_status":"published"}]
+
+--- Campaign status ---
+{"title":"Why reliability is a product feature","variants":[{"platform":"linkedin","status":"published","published_at":"2026-10-19T13:01:01.000Z"},{"platform":"x","status":"published","published_at":"2026-10-19T13:01:01.000Z"}]}
+
