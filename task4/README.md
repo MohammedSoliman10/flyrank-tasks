@@ -112,6 +112,9 @@ may remain valid until its short expiry even after logout revokes the refresh
 token; the important guarantee is that the session is revoked and the API
 returns `204`.
 
+A captured terminal transcript of this flow is committed at
+[`docs/manual-smoke-test.txt`](docs/manual-smoke-test.txt).
+
 ---
 
 ## 3. Connect a real Supabase project
