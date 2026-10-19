@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Portfolio sitemap sketch</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1600px; height: 1100px; }
+  body {
+    background:
+      radial-gradient(circle at 20% 10%, #e8e2d2 0, #d6cebc 42%, #c4bba7 100%);
+    font-family: "DejaVu Sans", sans-serif;
+    color: #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .paper {
+    position: relative;
+    width: 1460px;
+    height: 990px;
+    background:
+      linear-gradient(90deg, rgba(0,0,0,.025) 1px, transparent 1px),
+      linear-gradient(rgba(0,0,0,.018) 1px, transparent 1px),
+      #fbf6e7;
+    background-size: 34px 34px, 34px 34px, auto;
+    box-shadow: 0 30px 70px rgba(0,0,0,.28), 0 4px 10px rgba(0,0,0,.18);
+    transform: rotate(-0.55deg);
+    padding: 40px 52px;
+    border: 1px solid #e2d8bf;
+  }
+  .paper:before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 75% 15%, rgba(255,255,255,.45), transparent 45%);
+    pointer-events: none;
+  }
+  .top { display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 2; }
+  .title { font-family: "Z003", "DejaVu Sans", cursive; font-size: 52px; line-height: 1; color: #1f3e63; letter-spacing: .5px; }
+  .sub { margin-top: 10px; font-size: 20px; color: #4c5a69; letter-spacing: .2px; }
+  .date { font-size: 17px; color: #7a6a51; margin-top: 8px; }
+  .sticky {
+    width: 310px;
+    background: #ffe98a;
+    padding: 18px 20px 22px;
+    transform: rotate(2.4deg);
+    box-shadow: 0 7px 14px rgba(0,0,0,.16);
+    font-size: 17px;
+    line-height: 1.45;
+    color: #4b3a00;
+    border-bottom-right-radius: 2px;
+    position: relative;
+    top: -6px;
+  }
+  .sticky b { font-size: 19px; }
+  .sticky:before {
+    content: "";
+    position: absolute; top: -12px; left: 50%; width: 92px; height: 22px;
+    background: rgba(255,255,255,.55); transform: translateX(-50%) rotate(-3deg);
+    box-shadow: 0 1px 3px rgba(0,0,0,.12);
+  }
+  .diagram { position: absolute; left: 52px; top: 166px; width: 1356px; height: 780px; }
+  .wires { position: absolute; inset: 0; z-index: 1; }
+  .box {
+    position: absolute;
+    background: rgba(255,255,255,.72);
+    border: 3px solid #2c4f74;
+    border-radius: 9px;
+    box-shadow: 2px 3px 0 rgba(44,79,116,.14);
+    padding: 14px 16px;
+    z-index: 2;
+  }
+  .box h2 { margin: 0 0 6px; font-size: 24px; color: #173a5e; letter-spacing: .2px; }
+  .box p { margin: 4px 0; font-size: 16px; line-height: 1.35; color: #26333d; }
+  .home { left: 378px; top: 0; width: 600px; height: 176px; border-width: 4px; }
+  .home h2 { font-size: 28px; }
+  .home .claim { font-size: 17px; color: #1f3e63; }
+  .proof { display: flex; gap: 8px; margin-top: 10px; }
+  .proof span { background: #e8f2e0; border: 1.5px solid #5f7f4c; padding: 4px 8px; font-size: 13.5px; color: #29401e; border-radius: 4px; }
+  .work {
+    left: 0; top: 246px; width: 1356px; height: 300px;
+    border: 3px dashed #4b6b86; background: rgba(238,244,247,.55); border-radius: 12px;
+    padding: 14px 18px;
+  }
+  .work > .label { font-size: 16px; color: #35576f; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 12px; }
+  .cards { display: flex; gap: 18px; }
+  .card { flex: 1; background: #fffdf6; border: 2.5px solid #2c4f74; border-radius: 8px; padding: 13px 14px; min-height: 202px; box-shadow: 2px 3px 0 rgba(44,79,116,.11); }
+  .card h3 { margin: 0 0 8px; font-size: 19px; color: #173a5e; line-height: 1.15; }
+  .card p { margin: 5px 0; font-size: 14.5px; line-height: 1.35; }
+  .num { display: inline-block; background: #2c4f74; color: #fff; width: 25px; height: 25px; text-align: center; line-height: 25px; border-radius: 50%; font-size: 14px; margin-right: 5px; }
+  .about { left: 232px; top: 610px; width: 365px; height: 94px; }
+  .contact { left: 759px; top: 610px; width: 365px; height: 94px; border-color: #8b2f2f; background: #fff4ef; }
+  .contact h2 { color: #7a2222; }
+  .cta { position: absolute; left: 0; right: 0; bottom: 0; text-align: center; font-size: 22px; color: #7a2222; font-weight: 700; letter-spacing: .2px; }
+  .cta small { display: block; font-weight: 400; font-size: 15px; color: #6a5a4a; margin-top: 4px; }
+  .scribble { position: absolute; font-family: "Z003", "DejaVu Sans", cursive; color: #9b2c2c; font-size: 25px; transform: rotate(-3deg); }
+  .note1 { left: 1000px; top: 220px; }
+  .note2 { left: 60px; top: 560px; font-size: 21px; color: #35576f; transform: rotate(-2deg); }
+  .note3 { left: 925px; top: 575px; font-size: 20px; color: #9b2c2c; }
+  .arrowlabel { position: absolute; font-size: 14px; color: #7a6a51; background: #fbf6e7; padding: 1px 5px; }
+</style>
+</head>
+<body>
+  <div class="paper">
+    <div class="top">
+      <div>
+        <div class="title">Portfolio sitemap — v2</div>
+        <div class="sub">one claim · one person · one action</div>
+        <div class="date">sketch after pressure test · 19 Oct 2026</div>
+      </div>
+      <div class="sticky">
+        <b>Pressure test changed this</b><br>
+        Cut the <b>/work index</b>. Home is the index.<br><br>
+        Added a 3-line <b>proof strip</b> above the case cards.
+      </div>
+    </div>
+
+    <div class="diagram">
+      <svg class="wires" width="1356" height="780" viewBox="0 0 1356 780" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M678 176 V210" stroke="#2c4f74" stroke-width="3" />
+        <path d="M150 210 H1206" stroke="#2c4f74" stroke-width="3" stroke-linecap="round" />
+        <path d="M150 210 V246" stroke="#2c4f74" stroke-width="3" />
+        <path d="M678 210 V246" stroke="#2c4f74" stroke-width="3" />
+        <path d="M1206 210 V246" stroke="#2c4f74" stroke-width="3" />
+        <path d="M414 546 V610" stroke="#2c4f74" stroke-width="3" />
+        <path d="M941 546 V610" stroke="#2c4f74" stroke-width="3" />
+        <path d="M414 565 H941" stroke="#2c4f74" stroke-width="2" stroke-dasharray="7 7" />
+      </svg>
+
+      <div class="box home">
+        <h2>/ HOME</h2>
+        <p class="claim"><b>Claim:</b> idempotent, crash-safe backend workflows in Node.js.</p>
+        <div class="proof">
+          <span>16 auth tests</span>
+          <span>1 post after a timeout</span>
+          <span>60 records when a URL breaks</span>
+        </div>
+        <p style="margin-top:9px">3 case cards &nbsp;·&nbsp; short about &nbsp;·&nbsp; CTA</p>
+      </div>
+
+      <div class="box work">
+        <div class="label">Selected work — three proof cards, no index page</div>
+        <div class="cards">
+          <div class="card">
+            <h3><span class="num">1</span>Social Media Studio</h3>
+            <p><b>Problem:</b> retry after a timeout posts twice.</p>
+            <p><b>Decided:</b> unique key + claim/lease.</p>
+            <p><b>Proof:</b> 26 tests; one post after timeout.</p>
+          </div>
+          <div class="card">
+            <h3><span class="num">2</span>Supabase Auth API</h3>
+            <p><b>Problem:</b> auth is easy to get subtly wrong.</p>
+            <p><b>Decided:</b> one JWT middleware; generic errors.</p>
+            <p><b>Proof:</b> 16 tests; status table; 401 on old token.</p>
+          </div>
+          <div class="card">
+            <h3><span class="num">3</span>Polite Books to Scrape</h3>
+            <p><b>Problem:</b> one broken URL loses the run.</p>
+            <p><b>Decided:</b> cache, delay, per-URL isolation.</p>
+            <p><b>Proof:</b> 60 records; broken run keeps 60.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="box about">
+        <h2>/ ABOUT</h2>
+        <p>Why reliability. Short bio. Three proof links.</p>
+      </div>
+      <div class="box contact">
+        <h2>/ CONTACT</h2>
+        <p>Book the 20-minute review. Bring one failing retry path.</p>
+      </div>
+
+      <div class="scribble note1">evidence above the fold ↑</div>
+      <div class="scribble note2">no /work index — six pages only</div>
+      <div class="scribble note3">same CTA on every page →</div>
+
+      <div class="cta">
+        every page ends here: book a 20-minute reliability review
+        <small>one action, one button, no second ask</small>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

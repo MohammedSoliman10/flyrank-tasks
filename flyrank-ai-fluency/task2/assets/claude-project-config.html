@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Claude Project configuration</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1600px; height: 1100px; }
+  body {
+    font-family: "DejaVu Sans", sans-serif;
+    background: #e8e6df;
+    color: #23211d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .app {
+    width: 1540px;
+    height: 1040px;
+    background: #fbfaf7;
+    border: 1px solid #d8d4ca;
+    border-radius: 18px;
+    box-shadow: 0 26px 70px rgba(0,0,0,.22);
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    overflow: hidden;
+  }
+  aside {
+    background: #efede7;
+    border-right: 1px solid #ddd9ce;
+    padding: 26px 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  .brand { font-size: 22px; font-weight: 700; letter-spacing: -.4px; color: #2d2a24; }
+  .brand span { color: #8b8577; font-weight: 400; font-size: 15px; margin-left: 6px; }
+  .new {
+    margin: 22px 0 26px;
+    border: 1px solid #d1ccc0;
+    background: #fff;
+    border-radius: 9px;
+    padding: 11px 13px;
+    font-size: 14px;
+    color: #4a463d;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .new b { font-size: 18px; font-weight: 400; color: #8b8577; }
+  .side-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #9a9385; margin: 0 0 10px 4px; }
+  .project {
+    display: flex; gap: 11px; align-items: center;
+    padding: 11px 10px; border-radius: 10px; margin-bottom: 7px;
+  }
+  .project.active { background: #e2ded4; }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 8px; background: #2c4f74; color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+    flex: 0 0 auto;
+  }
+  .project .name { font-size: 13.5px; font-weight: 700; line-height: 1.2; }
+  .project .sub { font-size: 11.5px; color: #7f796b; margin-top: 3px; }
+  .side-divider { height: 1px; background: #ddd8cc; margin: 22px 0; }
+  .side-note { font-size: 12.5px; line-height: 1.55; color: #777063; }
+  .side-note b { color: #4b463d; }
+  .side-bottom { margin-top: auto; font-size: 11.5px; color: #9a9385; line-height: 1.5; }
+  main { padding: 28px 38px 24px; overflow: hidden; }
+  .topline { display: flex; justify-content: space-between; align-items: center; }
+  .crumb { font-size: 12.5px; color: #8f887a; letter-spacing: .02em; }
+  .actions { display: flex; gap: 10px; align-items: center; }
+  .saved { font-size: 12px; color: #3f6b45; background: #e8f1e5; border: 1px solid #c9ddc4; padding: 6px 10px; border-radius: 999px; }
+  .share { font-size: 12.5px; color: #4a463d; border: 1px solid #d6d1c5; background: #fff; padding: 7px 12px; border-radius: 8px; }
+  h1 { margin: 22px 0 8px; font-size: 31px; letter-spacing: -.7px; color: #211f1a; }
+  .lede { margin: 0; color: #6d675b; font-size: 14.5px; }
+  .tabs { display: flex; gap: 26px; border-bottom: 1px solid #e1ddd3; margin-top: 22px; }
+  .tabs span { padding: 0 0 12px; font-size: 13.5px; color: #8a8376; border-bottom: 2px solid transparent; }
+  .tabs .on { color: #2c2a24; border-bottom-color: #2c4f74; font-weight: 700; }
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 28px; margin-top: 22px; }
+  .panel { background: #fff; border: 1px solid #e2ded4; border-radius: 12px; padding: 20px 22px; }
+  .panel h2 { margin: 0 0 12px; font-size: 15px; letter-spacing: .02em; color: #2f2c26; }
+  .instructions { max-height: 735px; overflow: hidden; }
+  .block { font-size: 13.6px; line-height: 1.47; color: #39362f; }
+  .block h3 { font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: #7f786a; margin: 16px 0 5px; }
+  .block p { margin: 0 0 8px; }
+  .block ul { margin: 4px 0 8px 18px; padding: 0; }
+  .block li { margin: 2px 0; }
+  .block .quote { border-left: 3px solid #2c4f74; padding-left: 11px; color: #2c4f74; font-weight: 700; }
+  .block code { background: #f1efe8; padding: 1px 4px; border-radius: 4px; font-family: "DejaVu Sans Mono", monospace; font-size: 12.5px; }
+  .detail h2 { margin-bottom: 14px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: #9a9385; margin-bottom: 4px; }
+  .field .v { font-size: 13px; line-height: 1.4; color: #3a372f; }
+  .check { display: flex; gap: 8px; font-size: 12.5px; color: #3f5c45; margin: 9px 0; line-height: 1.3; }
+  .check b { color: #2f6b39; }
+  .quote-card { margin-top: 18px; background: #f4f1e9; border-radius: 9px; padding: 13px 14px; font-size: 12.5px; line-height: 1.45; color: #5d574b; }
+  .quote-card b { color: #2c4f74; }
+  .footer { margin-top: 16px; padding-top: 12px; border-top: 1px solid #ece8de; font-size: 11px; color: #a09a8d; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand">Claude <span>Projects</span></div>
+      <div class="new">New project <b>+</b></div>
+      <div class="side-label">My projects</div>
+      <div class="project active">
+        <div class="avatar">RP</div>
+        <div>
+          <div class="name">Reliability Portfolio</div>
+          <div class="sub">Mohammed Soliman</div>
+        </div>
+      </div>
+      <div class="project">
+        <div class="avatar" style="background:#7c6a4f">TS</div>
+        <div>
+          <div class="name">Task 5 — Prompt Ladder</div>
+          <div class="sub">Backend AI Engineering</div>
+        </div>
+      </div>
+      <div class="project">
+        <div class="avatar" style="background:#6a6f7c">AF</div>
+        <div>
+          <div class="name">AI Fluency notes</div>
+          <div class="sub">Week 1–2</div>
+        </div>
+      </div>
+      <div class="side-divider"></div>
+      <div class="side-note">
+        <b>This project runs for eight weeks.</b><br>
+        It holds the proof statement, the voice card, and the six-page sitemap.
+        The next case is a short conversation, not a rebuild.
+      </div>
+      <div class="side-bottom">
+        Project instructions are saved.<br>
+        Last updated 19 Oct 2026.
+      </div>
+    </aside>
+
+    <main>
+      <div class="topline">
+        <div class="crumb">Projects / Reliability Portfolio</div>
+        <div class="actions">
+          <span class="saved">● Saved</span>
+          <span class="share">Share</span>
+        </div>
+      </div>
+
+      <h1>Reliability Portfolio — Mohammed Soliman</h1>
+      <p class="lede">A portfolio tutor for one claim, one person, one action. It interviews; it does not ghostwrite.</p>
+
+      <div class="tabs">
+        <span class="on">Instructions</span>
+        <span>Knowledge</span>
+        <span>Chats</span>
+        <span>Settings</span>
+      </div>
+
+      <div class="grid">
+        <section class="panel instructions">
+          <h2>Custom instructions</h2>
+          <div class="block">
+            <p>You are my portfolio tutor for the next eight weeks. I am building a small portfolio that proves one claim to one person and moves them to one action. Do not write final copy for me unless I explicitly ask. Ask one sharp question at a time, then wait for my answer.</p>
+
+            <h3>My proof statement</h3>
+            <p>I design idempotent, crash-safe backend workflows in Node.js. I build APIs and workers that keep one side effect per request, survive restarts, and show the failure case in tests instead of claiming reliability in a bio. My proof is public: a Supabase auth API with 16 auth tests, a scraper that keeps 60 valid records when one URL breaks, and a social publisher that still creates one post after an ambiguous timeout. I do this for seed-stage SaaS founders and engineering leads who have a flaky job queue, webhook, or retry path and no platform engineer to own it. The one thing I want them to do is book a 20-minute reliability review, where we trace one failing retry together and leave with the smallest fix worth shipping.</p>
+
+            <h3>My voice card</h3>
+            <p class="quote">Direct, warm, plain, specific. No buzzwords.</p>
+
+            <h3>My one action</h3>
+            <p>Book a 20-minute reliability review.</p>
+
+            <h3>How to help</h3>
+            <ul>
+              <li>Interview me about real work. Do not invent a problem, decision, or outcome.</li>
+              <li>Push back when the claim widens to “full-stack”, “AI engineer”, or “everyone”.</li>
+              <li>For each case, ask until you can fill three beats: the problem, what I did and decided, what came of it.</li>
+              <li>Challenge every adjective. Replace it with a number, a test name, or a link.</li>
+              <li>Keep the sitemap to six pages. If a page does not serve the one action, say cut it.</li>
+              <li>End each session with one decision and one next step.</li>
+            </ul>
+
+            <h3>What not to do</h3>
+            <ul>
+              <li>Do not praise by default.</li>
+              <li>Do not add pages “because portfolios usually have them”.</li>
+              <li>Do not use “results-driven”, “passionate”, “cutting-edge”, “leverage”, or “impactful”.</li>
+              <li>Do not claim a live platform send that was not executed.</li>
+            </ul>
+          </div>
+          <div class="footer">
+            <span>Configuration record rendered from <code>task2/claude-project.md</code></span>
+            <span>19 Oct 2026</span>
+          </div>
+        </section>
+
+        <aside class="panel detail">
+          <h2>Project card</h2>
+          <div class="field"><label>Name</label><div class="v"><b>Reliability Portfolio — Mohammed Soliman</b></div></div>
+          <div class="field"><label>Purpose</label><div class="v">Build and pressure-test a six-page portfolio for one claim, one person, one action.</div></div>
+          <div class="field"><label>Runs for</label><div class="v">All eight weeks of the AI Fluency track</div></div>
+          <div class="field"><label>Voice card</label><div class="v">Direct, warm, plain, specific. No buzzwords.</div></div>
+          <div class="field"><label>One action</label><div class="v">Book a 20-minute reliability review</div></div>
+          <div class="check"><b>✓</b><span>Proof statement pasted in, not summarized</span></div>
+          <div class="check"><b>✓</b><span>Six-page sitemap constraint</span></div>
+          <div class="check"><b>✓</b><span>No ghostwriting; one question at a time</span></div>
+          <div class="check"><b>✓</b><span>Banned-word list and no invented outcomes</span></div>
+          <div class="quote-card">
+            <b>First message:</b> “Read the custom instructions and act as my tutor. Pressure-test my sitemap against the claim and the one action. Ask one question at a time if you need context, then give me the smallest change with the highest impact.”
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
