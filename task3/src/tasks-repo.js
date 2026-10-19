@@ -21,6 +21,12 @@ const SEED_TASKS = [
 
 const TASK_COLUMNS = 'id, title, done, created_at, updated_at';
 
+// ORDER BY cannot use $1 placeholders, so map user input through a whitelist.
+const SORT_COLUMNS = {
+  id: 'id',
+  title: 'LOWER(title)',
+};
+
 function toTask(row) {
   if (!row) return null;
 
@@ -36,6 +42,11 @@ function toTask(row) {
         ? row.updated_at.toISOString()
         : row.updated_at,
   };
+}
+
+/** Escape LIKE wildcards so a search for "50%" matches a literal "50%". */
+function escapeLike(value) {
+  return value.replace(/[\\%_]/g, '\\$&');
 }
 
 export function createPool({
@@ -59,6 +70,7 @@ export function createPool({
     idleTimeoutMillis: 30000,
   });
 
+  // An idle client error must not crash the whole API.
   pool.on('error', (error) => {
     console.error('Unexpected PostgreSQL pool error:', error.message);
   });
@@ -117,7 +129,11 @@ export async function seed(pool) {
   }
 }
 
-/** Build the Postgres-backed repository that the routes receive. */
+/**
+ * Build the Postgres-backed repository. It implements the same method names
+ * and behaviour as the SQLite repository from A2 (and the in-memory store from
+ * A1); only this module changed.
+ */
 export async function createTasksRepository({
   connectionString = process.env.DATABASE_URL,
   ssl,
@@ -129,9 +145,33 @@ export async function createTasksRepository({
   await seed(pool);
 
   return {
-    async list() {
+    async list({ search, done, sort = 'id', order = 'asc' } = {}) {
+      const conditions = [];
+      const values = [];
+
+      if (search) {
+        values.push(`%${escapeLike(search)}%`);
+        conditions.push(`title ILIKE $${values.length} ESCAPE '\\'`);
+      }
+
+      if (typeof done === 'boolean') {
+        values.push(done);
+        conditions.push(`done = $${values.length}`);
+      }
+
+      const direction = order === 'desc' ? 'DESC' : 'ASC';
+      const orderBy =
+        sort === 'title'
+          ? `${SORT_COLUMNS.title} ${direction}, id ASC`
+          : `${SORT_COLUMNS.id} ${direction}`;
+
+      const where = conditions.length
+        ? `WHERE ${conditions.join(' AND ')}`
+        : '';
+
       const { rows } = await pool.query(
-        `SELECT ${TASK_COLUMNS} FROM tasks ORDER BY id ASC`
+        `SELECT ${TASK_COLUMNS} FROM tasks ${where} ORDER BY ${orderBy}`,
+        values
       );
 
       return rows.map(toTask);
@@ -144,6 +184,50 @@ export async function createTasksRepository({
       );
 
       return toTask(rows[0]);
+    },
+
+    async create({ title, done = false }) {
+      const { rows } = await pool.query(
+        `INSERT INTO tasks (title, done)
+         VALUES ($1, $2)
+         RETURNING ${TASK_COLUMNS}`,
+        [title, done]
+      );
+
+      return toTask(rows[0]);
+    },
+
+    async update(id, changes) {
+      const current = await this.getById(id);
+      if (!current) return null;
+
+      const { rows } = await pool.query(
+        `UPDATE tasks
+            SET title = $1,
+                done = $2,
+                updated_at = NOW()
+          WHERE id = $3
+          RETURNING ${TASK_COLUMNS}`,
+        [changes.title ?? current.title, changes.done ?? current.done, id]
+      );
+
+      return toTask(rows[0]);
+    },
+
+    async remove(id) {
+      const result = await pool.query('DELETE FROM tasks WHERE id = $1', [id]);
+      return result.rowCount > 0;
+    },
+
+    async stats() {
+      const { rows } = await pool.query(`
+        SELECT COUNT(*)::int AS total,
+               COUNT(*) FILTER (WHERE done)::int AS completed
+          FROM tasks
+      `);
+
+      const { total, completed } = rows[0];
+      return { total, completed, pending: total - completed };
     },
 
     async ping() {
