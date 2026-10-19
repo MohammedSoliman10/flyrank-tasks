@@ -20,6 +20,26 @@ export function createApp(db) {
     res.json(tasks.list());
   });
 
+  // POST /tasks - create a task
+  app.post('/tasks', (req, res) => {
+    const { title, done } = req.body ?? {};
+
+    if (typeof title !== 'string' || title.trim() === '') {
+      return res.status(400).json({ error: 'Title is required' });
+    }
+
+    if (done !== undefined && typeof done !== 'boolean') {
+      return res.status(400).json({ error: 'Done must be a boolean' });
+    }
+
+    const task = tasks.create({ title: title.trim(), done: done ?? false });
+
+    res
+      .status(201)
+      .location(`/tasks/${task.id}`)
+      .json(task);
+  });
+
   // GET /tasks/:id - return one task or 404
   app.get('/tasks/:id', (req, res) => {
     const id = parseId(req.params.id);

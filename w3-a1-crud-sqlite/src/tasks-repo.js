@@ -17,6 +17,7 @@ export function createTasksRepository(db) {
   const selectById = db.prepare(
     `SELECT ${TASK_COLUMNS} FROM tasks WHERE id = ?`
   );
+  const insert = db.prepare('INSERT INTO tasks (title, done) VALUES (?, ?)');
 
   return {
     list() {
@@ -25,6 +26,11 @@ export function createTasksRepository(db) {
 
     getById(id) {
       return toTask(selectById.get(id));
+    },
+
+    create({ title, done = false }) {
+      const result = insert.run(title, done ? 1 : 0);
+      return this.getById(result.lastInsertRowid);
     },
   };
 }
