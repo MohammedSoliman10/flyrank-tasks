@@ -18,6 +18,23 @@ export function createApp(tasks) {
     }
   });
 
+  // GET /tasks - list every task
+  app.get('/tasks', async (req, res) => {
+    res.json(await tasks.list());
+  });
+
+  // GET /tasks/:id - return one task or 404
+  app.get('/tasks/:id', async (req, res) => {
+    const id = parseId(req.params.id);
+    const task = id === null ? null : await tasks.getById(id);
+
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    res.json(task);
+  });
+
   // Unknown routes still return JSON instead of an HTML error page.
   app.use((req, res) => {
     res.status(404).json({ error: 'Route not found' });
@@ -34,4 +51,12 @@ export function createApp(tasks) {
   });
 
   return app;
+}
+
+/** Parse a positive integer id, returning null for anything else. */
+export function parseId(rawId) {
+  if (typeof rawId !== 'string' || !/^\d+$/.test(rawId)) return null;
+
+  const id = Number(rawId);
+  return Number.isSafeInteger(id) && id > 0 ? id : null;
 }

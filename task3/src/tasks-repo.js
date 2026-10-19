@@ -19,6 +19,25 @@ const SEED_TASKS = [
   ['Finish the FlyRank assignment', true],
 ];
 
+const TASK_COLUMNS = 'id, title, done, created_at, updated_at';
+
+function toTask(row) {
+  if (!row) return null;
+
+  return {
+    ...row,
+    done: Boolean(row.done),
+    created_at:
+      row.created_at instanceof Date
+        ? row.created_at.toISOString()
+        : row.created_at,
+    updated_at:
+      row.updated_at instanceof Date
+        ? row.updated_at.toISOString()
+        : row.updated_at,
+  };
+}
+
 export function createPool({
   connectionString = process.env.DATABASE_URL,
   ssl,
@@ -110,6 +129,23 @@ export async function createTasksRepository({
   await seed(pool);
 
   return {
+    async list() {
+      const { rows } = await pool.query(
+        `SELECT ${TASK_COLUMNS} FROM tasks ORDER BY id ASC`
+      );
+
+      return rows.map(toTask);
+    },
+
+    async getById(id) {
+      const { rows } = await pool.query(
+        `SELECT ${TASK_COLUMNS} FROM tasks WHERE id = $1`,
+        [id]
+      );
+
+      return toTask(rows[0]);
+    },
+
     async ping() {
       await pool.query('SELECT 1');
       return true;
