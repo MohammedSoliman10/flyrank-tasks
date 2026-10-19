@@ -1,0 +1,27 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Mohammed Soliman//Portfolio Build//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:portfolio-next-case-20261026@mohammedsoliman.dev
+DTSTAMP:20261019T120000Z
+DTSTART:20261026T090000Z
+DTEND:20261026T091500Z
+RRULE:FREQ=WEEKLY;COUNT=8
+SUMMARY:Add next portfolio case: Webhook Delivery Service
+DESCRIPTION:Collect the test transcript first. Then open the preserved
+ Claude Project (Reliability Portfolio - Mohammed Soliman) and interview
+ one question at a time. Draft the three beats: problem, what I did and
+ decided, what came of it. Update Home, About, and the sitemap. See
+ flyrank-ai-fluency/capstone/how-to-add-next-case.md.
+LOCATION:https://github.com/MohammedSoliman10/flyrank-tasks
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Add next portfolio case: collect evidence first
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+END:VCALENDAR
