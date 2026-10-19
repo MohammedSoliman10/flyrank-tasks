@@ -1,0 +1,29 @@
+{
+  "name": "flyrank-task5-books-scraper",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FlyRank Task 5: a polite Books to Scrape scraper with validation, caching, and a run report.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "scrape": "node src/index.js",
+    "scrape:refresh": "node src/index.js --refresh",
+    "scrape:broken": "node src/index.js --broken --output-dir output/broken",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "scraper",
+    "cheerio",
+    "zod",
+    "books-to-scrape"
+  ],
+  "author": "Mohammed Soliman",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.2.0",
+    "zod": "^4.3.6"
+  }
+}

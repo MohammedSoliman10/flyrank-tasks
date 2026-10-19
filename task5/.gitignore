@@ -1,0 +1,10 @@
+node_modules/
+cache/
+npm-debug.log*
+*.log
+.DS_Store
+
+# The broken run writes the same 60 valid records plus one expected error.
+# The report and error list are committed as evidence; the duplicate book list
+# is not.
+output/broken/books.json
