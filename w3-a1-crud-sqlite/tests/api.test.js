@@ -258,3 +258,99 @@ test('DELETE /tasks/:id removes a task and returns 404 afterwards', async () => 
     context.cleanup();
   }
 });
+
+test('GET /tasks supports search, done filter and sorting via SQL', async () => {
+  const context = setup();
+
+  try {
+    const search = await request(context.app)
+      .get('/tasks')
+      .query({ search: 'milk' });
+
+    assert.equal(search.status, 200);
+    assert.deepEqual(
+      search.body.map((task) => task.title),
+      ['Buy milk']
+    );
+
+    const completed = await request(context.app)
+      .get('/tasks')
+      .query({ done: 'true' });
+
+    assert.deepEqual(
+      completed.body.map((task) => task.title),
+      ['Finish the FlyRank assignment']
+    );
+
+    const pending = await request(context.app)
+      .get('/tasks')
+      .query({ done: 'false', sort: 'title' });
+
+    assert.deepEqual(
+      pending.body.map((task) => task.title),
+      ['Buy milk', 'Walk the dog']
+    );
+
+    const descending = await request(context.app)
+      .get('/tasks')
+      .query({ sort: 'title', order: 'desc' });
+
+    assert.deepEqual(
+      descending.body.map((task) => task.title),
+      ['Walk the dog', 'Finish the FlyRank assignment', 'Buy milk']
+    );
+
+    await request(context.app).post('/tasks').send({ title: '100% done' });
+
+    const literalPercent = await request(context.app)
+      .get('/tasks')
+      .query({ search: '%' });
+
+    assert.deepEqual(
+      literalPercent.body.map((task) => task.title),
+      ['100% done']
+    );
+  } finally {
+    context.cleanup();
+  }
+});
+
+test('GET /tasks rejects invalid query parameters', async () => {
+  const context = setup();
+
+  try {
+    const cases = [
+      [{ done: 'maybe' }, 'Done must be true or false'],
+      [{ sort: 'created_at' }, 'Sort must be id or title'],
+      [{ order: 'sideways' }, 'Order must be asc or desc'],
+      [{ done: ['true', 'false'] }, 'Done must be true or false'],
+    ];
+
+    for (const [query, error] of cases) {
+      const response = await request(context.app).get('/tasks').query(query);
+      assert.equal(response.status, 400);
+      assert.deepEqual(response.body, { error });
+    }
+  } finally {
+    context.cleanup();
+  }
+});
+
+test('GET /stats counts tasks with SQL aggregates', async () => {
+  const context = setup();
+
+  try {
+    const initial = await request(context.app).get('/stats');
+    assert.equal(initial.status, 200);
+    assert.deepEqual(initial.body, { total: 3, completed: 1, pending: 2 });
+
+    await request(context.app)
+      .post('/tasks')
+      .send({ title: 'Another finished task', done: true });
+
+    const updated = await request(context.app).get('/stats');
+    assert.deepEqual(updated.body, { total: 4, completed: 2, pending: 2 });
+  } finally {
+    context.cleanup();
+  }
+});

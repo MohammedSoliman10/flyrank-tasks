@@ -15,9 +15,20 @@ export function createApp(db) {
     res.json({ status: 'ok' });
   });
 
-  // GET /tasks - list every task
+  // GET /tasks - list tasks, optionally filtered and sorted with SQL
   app.get('/tasks', (req, res) => {
-    res.json(tasks.list());
+    const parsed = parseListOptions(req.query);
+
+    if (parsed.error) {
+      return res.status(400).json({ error: parsed.error });
+    }
+
+    res.json(tasks.list(parsed.options));
+  });
+
+  // GET /stats - aggregate counts computed by SQLite
+  app.get('/stats', (req, res) => {
+    res.json(tasks.stats());
   });
 
   // POST /tasks - create a task
@@ -108,6 +119,48 @@ export function parseId(rawId) {
 
   const id = Number(rawId);
   return Number.isSafeInteger(id) && id > 0 ? id : null;
+}
+
+/** Validate and normalise the optional GET /tasks query parameters. */
+function parseListOptions(query) {
+  const options = {};
+
+  if (query.search !== undefined) {
+    if (typeof query.search !== 'string') {
+      return { error: 'Search must be a single value' };
+    }
+
+    const search = query.search.trim();
+    if (search) options.search = search;
+  }
+
+  if (query.done !== undefined) {
+    if (query.done === 'true' || query.done === '1') {
+      options.done = true;
+    } else if (query.done === 'false' || query.done === '0') {
+      options.done = false;
+    } else {
+      return { error: 'Done must be true or false' };
+    }
+  }
+
+  if (query.sort !== undefined) {
+    if (query.sort !== 'id' && query.sort !== 'title') {
+      return { error: 'Sort must be id or title' };
+    }
+
+    options.sort = query.sort;
+  }
+
+  if (query.order !== undefined) {
+    if (query.order !== 'asc' && query.order !== 'desc') {
+      return { error: 'Order must be asc or desc' };
+    }
+
+    options.order = query.order;
+  }
+
+  return { options };
 }
 
 /** Validate a PUT/PATCH body and normalise the fields that were provided. */
