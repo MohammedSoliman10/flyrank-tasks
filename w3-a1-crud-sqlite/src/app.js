@@ -52,6 +52,38 @@ export function createApp(db) {
     res.json(task);
   });
 
+  // PUT /tasks/:id - replace/update a task (PATCH is accepted too)
+  const updateTask = (req, res) => {
+    const id = parseId(req.params.id);
+
+    if (id === null || !tasks.getById(id)) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    const parsed = parseTaskUpdate(req.body);
+
+    if (parsed.error) {
+      return res.status(400).json({ error: parsed.error });
+    }
+
+    const task = tasks.update(id, parsed.changes);
+    res.json(task);
+  };
+
+  app.put('/tasks/:id', updateTask);
+  app.patch('/tasks/:id', updateTask);
+
+  // DELETE /tasks/:id - remove a task
+  app.delete('/tasks/:id', (req, res) => {
+    const id = parseId(req.params.id);
+
+    if (id === null || !tasks.remove(id)) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    res.status(204).end();
+  });
+
   // Unknown routes still return JSON instead of an HTML error page.
   app.use((req, res) => {
     res.status(404).json({ error: 'Route not found' });
@@ -76,4 +108,34 @@ export function parseId(rawId) {
 
   const id = Number(rawId);
   return Number.isSafeInteger(id) && id > 0 ? id : null;
+}
+
+/** Validate a PUT/PATCH body and normalise the fields that were provided. */
+function parseTaskUpdate(body) {
+  if (body === null || typeof body !== 'object' || Array.isArray(body)) {
+    return { error: 'Invalid request body' };
+  }
+
+  const { title, done } = body;
+
+  if (title === undefined && done === undefined) {
+    return { error: 'Provide at least one of title or done' };
+  }
+
+  if (
+    title !== undefined &&
+    (typeof title !== 'string' || title.trim() === '')
+  ) {
+    return { error: 'Title is required' };
+  }
+
+  if (done !== undefined && typeof done !== 'boolean') {
+    return { error: 'Done must be a boolean' };
+  }
+
+  const changes = {};
+  if (title !== undefined) changes.title = title.trim();
+  if (done !== undefined) changes.done = done;
+
+  return { changes };
 }

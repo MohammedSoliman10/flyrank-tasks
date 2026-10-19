@@ -18,6 +18,14 @@ export function createTasksRepository(db) {
     `SELECT ${TASK_COLUMNS} FROM tasks WHERE id = ?`
   );
   const insert = db.prepare('INSERT INTO tasks (title, done) VALUES (?, ?)');
+  const update = db.prepare(`
+    UPDATE tasks
+       SET title = @title,
+           done = @done,
+           updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+     WHERE id = @id
+  `);
+  const remove = db.prepare('DELETE FROM tasks WHERE id = ?');
 
   return {
     list() {
@@ -31,6 +39,23 @@ export function createTasksRepository(db) {
     create({ title, done = false }) {
       const result = insert.run(title, done ? 1 : 0);
       return this.getById(result.lastInsertRowid);
+    },
+
+    update(id, changes) {
+      const current = this.getById(id);
+      if (!current) return null;
+
+      update.run({
+        id,
+        title: changes.title ?? current.title,
+        done: (changes.done ?? current.done) ? 1 : 0,
+      });
+
+      return this.getById(id);
+    },
+
+    remove(id) {
+      return remove.run(id).changes > 0;
     },
   };
 }
