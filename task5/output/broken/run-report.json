@@ -1,0 +1,42 @@
+{
+  "target": "https://books.toscrape.com",
+  "started_at": "2026-10-19T11:57:21.894Z",
+  "finished_at": "2026-10-19T11:57:22.800Z",
+  "duration_ms": 906,
+  "catalogue_pages_fetched": 3,
+  "catalogue_page_limit": 3,
+  "catalogue_pages": [
+    {
+      "url": "https://books.toscrape.com/catalogue/page-1.html",
+      "discovered": 20,
+      "from_cache": true
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/page-2.html",
+      "discovered": 20,
+      "from_cache": true
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/page-3.html",
+      "discovered": 20,
+      "from_cache": true
+    }
+  ],
+  "unique_book_urls_discovered": 61,
+  "pages_attempted": 64,
+  "pages_fetched": 0,
+  "cache_hits": 63,
+  "valid_records": 60,
+  "unique_records": 60,
+  "invalid_records": 0,
+  "failed_pages": 1,
+  "total_errors": 1,
+  "expected_records": 60,
+  "politeness": {
+    "user_agent": "FlyRankInternshipA9/1.0 (+https://github.com/MohammedSoliman10/flyrank-tasks/tree/main/task5)",
+    "delay_ms": 500,
+    "request_timeout_ms": 15000,
+    "retry_policy": "Retry once on timeout or HTTP 5xx; never retry 403/404.",
+    "concurrency": 1
+  }
+}
