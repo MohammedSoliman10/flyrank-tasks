@@ -1,6 +1,7 @@
 # FlyRank Tasks
 
-Assignments completed for the **FlyRank Backend AI Engineering** internship.
+Work completed for the **FlyRank Backend AI Engineering** internship, plus the
+**General AI Fluency** track deliverables.
 
 | Assignment | Folder | Status |
 | --- | --- | --- |
@@ -9,6 +10,7 @@ Assignments completed for the **FlyRank Backend AI Engineering** internship.
 | Task 4 — Supabase Auth API | [`task4`](./task4) | ✅ Complete |
 | Task 5 — Polite Books to Scrape scraper | [`task5`](./task5) | ✅ Complete |
 | Capstone — Social Media Studio | [`social-media-studio`](./social-media-studio) | ✅ Complete · live target opt-in |
+| General AI Fluency — tasks 2–5 + capstone | [`flyrank-ai-fluency`](./flyrank-ai-fluency) | ✅ Complete · five folders |
 
 Each assignment lives in its own folder with its own dependencies, database, and
 README. More assignments will be added here as the internship progresses.
@@ -152,5 +154,26 @@ npm start
 ```
 
 Full documentation: [`social-media-studio/README.md`](./social-media-studio/README.md)
+
+## General AI Fluency — tasks 2–5 + capstone
+
+A five-folder submission for the **General AI Fluency** track. The through-line
+is a narrow portfolio claim for Mohammed Soliman: *I design idempotent,
+crash-safe backend workflows in Node.js.* The audience is a seed-stage SaaS
+founder or engineering lead with a flaky queue, webhook, or retry path; the one
+action is a 20-minute reliability review.
+
+| Folder | Deliverable |
+| --- | --- |
+| [`flyrank-ai-fluency/task2`](./flyrank-ai-fluency/task2) | Sitemap sketch, Claude Project configuration, pressure-test prompt + output |
+| [`flyrank-ai-fluency/task3`](./flyrank-ai-fluency/task3) | One-paragraph proof statement + one-line why |
+| [`flyrank-ai-fluency/task4`](./flyrank-ai-fluency/task4) | Voice card, three framed cases, bio, CTA, before/after edit |
+| [`flyrank-ai-fluency/task5`](./flyrank-ai-fluency/task5) | Weak baseline + five single-layer prompt versions + final reusable prompt |
+| [`flyrank-ai-fluency/capstone`](./flyrank-ai-fluency/capstone) | Next-case playbook, named next piece, recurring reminder evidence, preserved Claude Project |
+
+Each folder has its own README and assets. The Claude screenshots are local
+renders of the exact configuration/transcript text; the provenance is stated in
+the folder READMEs. Full index:
+[`flyrank-ai-fluency/README.md`](./flyrank-ai-fluency/README.md)
 
 
